@@ -21,7 +21,7 @@ class ScanPdfApp:
 
         self.input_var = tk.StringVar()
         self.output_var = tk.StringVar(value=str(ROOT / "output" / "generated" / "output.xlsx"))
-        self.pages_var = tk.StringVar(value="3")
+        self.pages_var = tk.StringVar(value="1")
         self.status_var = tk.StringVar(value="Sẵn sàng")
 
         self._build_ui()
@@ -72,6 +72,9 @@ class ScanPdfApp:
         self.log.insert("end", text + "\n")
         self.log.see("end")
 
+    def append_log_threadsafe(self, text: str) -> None:
+        self.root.after(0, lambda: self.append_log(text))
+
     def run_process(self) -> None:
         input_pdf = self.input_var.get().strip()
         output_xlsx = self.output_var.get().strip()
@@ -95,6 +98,7 @@ class ScanPdfApp:
                     work_root=ROOT / "output" / "artifacts",
                     output_xlsx=output_xlsx,
                     limit_pages=limit_pages,
+                    progress_callback=lambda msg: self.append_log_threadsafe(f"[STEP] {msg}"),
                 )
                 self.root.after(0, lambda: self._on_success(result.template_id, len(result.pages), len(result.parsed_rows), output_xlsx, result.warnings))
             except Exception as exc:
@@ -124,6 +128,7 @@ def main() -> None:
         pass
     app = ScanPdfApp(root)
     app.append_log("ScanPDF GUI ready.")
+    app.append_log("Mặc định chỉ chạy 1 trang để test cho nhanh.")
     root.mainloop()
 
 

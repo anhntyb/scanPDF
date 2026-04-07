@@ -18,6 +18,7 @@ def process_pdf(
     work_root: str | Path,
     output_xlsx: str | Path | None = None,
     limit_pages: int | None = None,
+    progress_callback=None,
 ) -> ExtractionResult:
     pdf_path = Path(pdf_path)
     work_root = Path(work_root)
@@ -28,19 +29,29 @@ def process_pdf(
     ocr_dir = work_root / "ocr" / stem
     ocr_dir.mkdir(parents=True, exist_ok=True)
 
+    if progress_callback:
+        progress_callback(f"Inspecting PDF: {pdf_path.name}")
     pdf_info = inspect_pdf(pdf_path)
+    if progress_callback:
+        progress_callback(f"Rasterizing {pdf_info.pages} pages (limit={limit_pages or pdf_info.pages})")
     rasterized = rasterize_pdf(pdf_path, raster_dir, dpi=200, limit_pages=limit_pages)
 
     pages = []
     for i, image_path in enumerate(rasterized, start=1):
         processed_path = prep_dir / image_path.name
+        if progress_callback:
+            progress_callback(f"Preprocessing page {i}/{len(rasterized)}")
         preprocess_image(image_path, processed_path)
+        if progress_callback:
+            progress_callback(f"Running OCR on page {i}/{len(rasterized)}")
         page = run_ocr(processed_path, page_number=i)
         pages.append(page)
 
     combined_text = "\n".join(page.text for page in pages if page.text)
     template_id = classify_document(pdf_path, combined_text)
 
+    if progress_callback:
+        progress_callback("Parsing OCR rows")
     parsed_rows, parse_warnings, metadata = parse_rows_from_pages(pages, template_id, pdf_path.name)
 
     result = ExtractionResult(
@@ -76,6 +87,11 @@ def process_pdf(
     text_path.write_text("\n\n".join([f"--- PAGE {p.page_number} ---\n{p.text}" for p in pages]), encoding="utf-8")
 
     if output_xlsx:
+        if progress_callback:
+            progress_callback(f"Exporting Excel: {Path(output_xlsx).name}")
         export_result(result, output_xlsx)
+
+    if progress_callback:
+        progress_callback(f"Done. Parsed {len(parsed_rows)} rows")
 
     return result
