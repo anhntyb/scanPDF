@@ -1,0 +1,14 @@
+# Core PDF/OCR stack
+PyMuPDF>=1.24
+opencv-python>=4.10
+pytesseract>=0.3.10
+Pillow>=10.4
+pandas>=2.2
+openpyxl>=3.1
+numpy>=1.26
+rapidfuzz>=3.9
+
+# Optional alternatives / future upgrades
+# pdf2image
+# paddleocr
+# xlsxwriter

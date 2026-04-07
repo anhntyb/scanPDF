@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+output/generated/
+output/tmp/
+artifacts/
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+.DS_Store
+node_modules/
+dist/

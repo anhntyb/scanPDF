@@ -1,0 +1,13 @@
+{
+  "templateId": "cong_an",
+  "label": "Công an",
+  "match": {
+    "keywords": [],
+    "notes": "Populate after OCR/page review"
+  },
+  "pages": [],
+  "export": {
+    "workbook": "cong-an-output.xlsx",
+    "sheets": ["summary", "raw_ocr", "parsed_data", "review_flags"]
+  }
+}

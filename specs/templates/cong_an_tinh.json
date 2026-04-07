@@ -1,0 +1,13 @@
+{
+  "templateId": "cong_an_tinh",
+  "label": "Công an tỉnh",
+  "match": {
+    "keywords": [],
+    "notes": "Populate after OCR/page review"
+  },
+  "pages": [],
+  "export": {
+    "workbook": "cong-an-tinh-output.xlsx",
+    "sheets": ["summary", "raw_ocr", "parsed_data", "review_flags"]
+  }
+}

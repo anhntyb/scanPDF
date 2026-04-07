@@ -1,0 +1,13 @@
+{
+  "templateId": "ca",
+  "label": "CA",
+  "match": {
+    "keywords": [],
+    "notes": "Populate after OCR/page review"
+  },
+  "pages": [],
+  "export": {
+    "workbook": "ca-output.xlsx",
+    "sheets": ["summary", "raw_ocr", "parsed_data", "review_flags"]
+  }
+}
